@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { primaryNav, site } from "@/data/site";
 import { useCart } from "@/lib/cart";
-import { cx } from "@/lib/format";
+import { cx, formatPrice } from "@/lib/format";
 import { whatsappHello } from "@/lib/whatsapp";
 import { Bag, Instagram, Menu, WhatsApp, X } from "./icons";
 import { Logo } from "./Logo";
@@ -54,7 +54,9 @@ export function Header() {
           <span aria-hidden className="hidden text-gold sm:inline">
             ·
           </span>
-          <span>Free delivery on orders over ₹3,000</span>
+          <span>
+            Free delivery on orders over {formatPrice(site.freeDeliveryOver)}
+          </span>
         </div>
       </div>
 

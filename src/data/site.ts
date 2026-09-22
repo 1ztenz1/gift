@@ -24,6 +24,8 @@ export const site = {
 
   hours: "Mon – Sat, 10am – 8pm IST",
   shipsTo: "All across India",
+  /** Order value that unlocks free delivery. Shown in the top bar and the bag. */
+  freeDeliveryOver: 3000,
 
   socials: {
     instagram: "https://www.instagram.com/amyah_lavv/",

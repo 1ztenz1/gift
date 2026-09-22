@@ -1,21 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { site } from "@/data/site";
 import { useCart, type ResolvedItem } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 import { ProductImage } from "./ProductImage";
 import { Button, ButtonLink } from "./ui";
 import { Bag, Minus, Plus, Trash, X } from "./icons";
 
-const FREE_DELIVERY_OVER = 3000;
-
 export function CartDrawer() {
   const { isOpen, closeBag, resolved, subtotal, count } = useCart();
 
   if (!isOpen) return null;
 
-  const toFreeDelivery = FREE_DELIVERY_OVER - subtotal;
-  const progress = Math.min(100, (subtotal / FREE_DELIVERY_OVER) * 100);
+  const toFreeDelivery = site.freeDeliveryOver - subtotal;
+  const progress = Math.min(100, (subtotal / site.freeDeliveryOver) * 100);
 
   return (
     <div

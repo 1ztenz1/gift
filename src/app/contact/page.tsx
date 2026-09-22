@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { Breadcrumbs } from "@/components/ui";
 import { Clock, Instagram, Mail, MapPin, WhatsApp } from "@/components/icons";
 import { site } from "@/data/site";
-import { whatsappHello } from "@/lib/whatsapp";
+import { whatsappHello, whatsappLink } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -137,7 +137,15 @@ export default function ContactPage() {
               and the date, and you will get a quote the same day.
             </p>
             <a
-              href={whatsappHello("bulk orders")}
+              href={whatsappLink(
+                [
+                  "Hi Afni! I would like a quote for a bulk order.",
+                  "",
+                  "Quantity: ",
+                  "Budget: ",
+                  "Needed by: ",
+                ].join("\n"),
+              )}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-medium text-gold-deep underline decoration-gold underline-offset-4"
