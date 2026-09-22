@@ -1,26 +1,191 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-cream: #fdfaf6;
+  --color-shell: #f7f0e8;
+  --color-sand: #efe4d7;
+  --color-line: #e7dbcd;
+  --color-ink: #241e1a;
+  --color-muted: #6f6259;
+  --color-gold: #c0904a;
+  --color-gold-deep: #966c2f;
+  --color-gold-soft: #f0e2cb;
+  --color-rose: #c2807c;
+  --color-blush: #f6e4df;
+  --color-sage: #879a81;
+  --color-leaf: #4f6b4b;
+
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-xl2: 1.75rem;
+
+  --shadow-soft: 0 1px 2px rgb(36 30 26 / 0.04), 0 8px 24px -12px rgb(36 30 26 / 0.14);
+  --shadow-lift: 0 2px 4px rgb(36 30 26 / 0.05), 0 22px 44px -20px rgb(36 30 26 / 0.26);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Keyboard users get a ring; mouse users do not. */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-gold-soft);
+    color: var(--color-ink);
+  }
+
+  /* Native controls follow the warm palette instead of the OS blue. */
+  input, textarea, select {
+    accent-color: var(--color-gold);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .container-x {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 80rem;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-x { padding-inline: 2rem; }
+  }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-gold-deep);
+  }
+
+  .hairline {
+    background-image: linear-gradient(90deg, transparent, var(--color-line) 18%, var(--color-line) 82%, transparent);
+    height: 1px;
+  }
+
+  /* Edge-to-edge horizontal scrollers that still respect the page gutter. */
+  .snap-rail {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .snap-rail::-webkit-scrollbar { display: none; }
+  .snap-rail > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* Reserve the fixed mobile bar so nothing sits underneath it. */
+  .pb-safe-nav {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 1024px) {
+    .pb-safe-nav { padding-bottom: 0; }
+  }
+}
+
+/* Scroll-reveal: hidden state only applies once JS has armed the element,
+   so content stays visible when JS fails or is disabled. */
+[data-reveal] {
+  opacity: 1;
+}
+
+[data-reveal="armed"] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s var(--ease-out-soft), transform 0.7s var(--ease-out-soft);
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes shimmer {
+  to { background-position: 200% 0; }
+}
+
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-fade-up { animation: fade-up 0.6s var(--ease-out-soft) both; }
+.animate-fade-in { animation: fade-in 0.5s ease both; }
+.animate-slide-in-right { animation: slide-in-right 0.32s var(--ease-out-soft) both; }
+.animate-float-soft { animation: float-soft 6s ease-in-out infinite; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-shell) 25%, var(--color-sand) 50%, var(--color-shell) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal="armed"] { opacity: 1; transform: none; }
 }
