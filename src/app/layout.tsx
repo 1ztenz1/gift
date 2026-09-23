@@ -9,12 +9,18 @@ import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { site } from "@/data/site";
 import "./globals.css";
 
-/* Variable fonts, self-hosted by next/font — no render-blocking request to Google. */
+/*
+ * Variable fonts, self-hosted by next/font — no render-blocking request to
+ * Google.
+ *
+ * Fraunces ships SOFT, WONK and opsz axes, none of which this design varies.
+ * Requesting them pulled a 118KB display face — larger than React itself —
+ * so only the weight axis is loaded.
+ */
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
   display: "swap",
-  axes: ["SOFT", "WONK", "opsz"],
 });
 
 const jakarta = Plus_Jakarta_Sans({

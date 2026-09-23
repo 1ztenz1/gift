@@ -185,7 +185,7 @@ function MobileMenu({
         tabIndex={-1}
       />
 
-      <div className="absolute inset-y-0 left-0 flex w-[86%] max-w-sm animate-slide-in-right flex-col bg-cream shadow-lift">
+      <div className="absolute inset-y-0 left-0 flex w-[86%] max-w-sm animate-slide-in-left flex-col bg-cream shadow-lift">
         <div className="flex h-16 items-center justify-between border-b border-line px-5">
           <span className="font-display text-xl">{site.name}</span>
           <button

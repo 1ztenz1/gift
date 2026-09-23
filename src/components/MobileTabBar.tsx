@@ -11,8 +11,13 @@ import { Bag, Grid, Home, Sparkle, WhatsApp } from "./icons";
  * Thumb-reach navigation for phones. WhatsApp sits in the middle because it
  * is how orders actually get placed.
  *
- * The chat button stays inside the bar rather than floating above it: the
- * product page pins its own total/add-to-bag bar directly on top, and a
+ * Every item is the same box: a fixed 24px icon slot above a label, in a
+ * five-column grid. Chat is set apart by colour alone — when it had a larger
+ * icon, its label sat several pixels below the other four and the row read as
+ * crooked.
+ *
+ * The chat button also stays inside the bar rather than floating above it:
+ * the product page pins its own total/add-to-bag bar directly on top, and a
  * raised button would punch through it.
  */
 export function MobileTabBar() {
@@ -22,64 +27,129 @@ export function MobileTabBar() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  const tab = (active: boolean) =>
-    cx(
-      "flex flex-1 flex-col items-center justify-center gap-1 pt-2 pb-1 text-[10.5px] font-medium transition-colors",
-      active ? "text-ink" : "text-muted",
-    );
-
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-cream/94 backdrop-blur-lg lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-cream/95 backdrop-blur-lg lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       aria-label="Quick navigation"
     >
-      <div className="mx-auto flex h-16 max-w-lg items-stretch px-1">
-        <Link href="/" className={tab(isActive("/"))}>
+      <ul className="mx-auto grid max-w-lg grid-cols-5">
+        <TabItem href="/" label="Home" active={isActive("/")}>
           <Home size={21} />
-          Home
-        </Link>
+        </TabItem>
 
-        <Link href="/shop" className={tab(isActive("/shop"))}>
+        <TabItem href="/shop" label="Shop" active={isActive("/shop")}>
           <Grid size={21} />
-          Shop
-        </Link>
+        </TabItem>
 
-        <a
+        <TabItem
           href={whatsappHello()}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-1 flex-col items-center justify-center gap-1 pt-2 pb-1 text-[10.5px] font-medium text-[#1FA855]"
-          aria-label="Chat on WhatsApp"
+          label="Chat"
+          external
+          tone="whatsapp"
+          ariaLabel="Chat on WhatsApp"
         >
-          <span className="flex size-7 items-center justify-center rounded-full bg-[#1FA855] text-white">
-            <WhatsApp size={17} />
+          <span className="flex size-6 items-center justify-center rounded-full bg-[#1FA855] text-white">
+            <WhatsApp size={14} />
           </span>
-          Chat
-        </a>
+        </TabItem>
 
-        <Link href="/custom-order" className={tab(isActive("/custom-order"))}>
+        <TabItem
+          href="/custom-order"
+          label="Custom"
+          active={isActive("/custom-order")}
+        >
           <Sparkle size={21} />
-          Custom
-        </Link>
+        </TabItem>
 
+        <TabItem
+          label="Bag"
+          onClick={openBag}
+          badge={ready && count > 0 ? count : undefined}
+          ariaLabel={`Open bag${ready && count ? `, ${count} items` : ""}`}
+        >
+          <Bag size={21} />
+        </TabItem>
+      </ul>
+    </nav>
+  );
+}
+
+function TabItem({
+  href,
+  label,
+  children,
+  active = false,
+  external = false,
+  onClick,
+  badge,
+  tone = "default",
+  ariaLabel,
+}: {
+  href?: string;
+  label: string;
+  children: React.ReactNode;
+  active?: boolean;
+  external?: boolean;
+  onClick?: () => void;
+  badge?: number;
+  tone?: "default" | "whatsapp";
+  ariaLabel?: string;
+}) {
+  // One shared box for every tab, so all five labels land on one baseline.
+  const inner = (
+    <>
+      <span className="relative flex h-6 items-center justify-center">
+        {children}
+        {badge !== undefined ? (
+          <span className="absolute -top-1 -right-2.5 flex min-w-[16px] items-center justify-center rounded-full bg-gold px-1 text-[9.5px] leading-[16px] font-bold text-white tabular-nums">
+            {badge > 9 ? "9+" : badge}
+          </span>
+        ) : null}
+      </span>
+      <span className="text-[10.5px] leading-none">{label}</span>
+    </>
+  );
+
+  const className = cx(
+    "flex h-16 w-full flex-col items-center justify-center gap-1.5 font-medium transition-colors",
+    tone === "whatsapp"
+      ? "text-[#1A8B47]"
+      : active
+        ? "text-ink"
+        : "text-muted hover:text-ink",
+  );
+
+  return (
+    <li className="contents">
+      {onClick ? (
         <button
           type="button"
-          onClick={openBag}
-          className={cx(tab(false), "relative")}
-          aria-label={`Open bag${ready && count ? `, ${count} items` : ""}`}
+          onClick={onClick}
+          className={className}
+          aria-label={ariaLabel}
         >
-          <span className="relative">
-            <Bag size={21} />
-            {ready && count > 0 ? (
-              <span className="absolute -top-1.5 -right-2 flex min-w-[16px] items-center justify-center rounded-full bg-gold px-1 text-[9.5px] leading-4 font-bold text-white tabular-nums">
-                {count > 9 ? "9+" : count}
-              </span>
-            ) : null}
-          </span>
-          Bag
+          {inner}
         </button>
-      </div>
-    </nav>
+      ) : external ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={className}
+          aria-label={ariaLabel}
+        >
+          {inner}
+        </a>
+      ) : (
+        <Link
+          href={href ?? "/"}
+          className={className}
+          aria-current={active ? "page" : undefined}
+        >
+          {inner}
+        </Link>
+      )}
+    </li>
   );
 }

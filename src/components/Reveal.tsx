@@ -4,6 +4,41 @@ import { useEffect, useRef, useState } from "react";
 import { cx } from "@/lib/format";
 
 /**
+ * One IntersectionObserver shared by every <Reveal> on the page.
+ *
+ * Each instance used to build its own observer, which on the home page meant
+ * dozens of them watching the same scroll. A single observer with a registry
+ * does the same work in one callback.
+ */
+let sharedObserver: IntersectionObserver | null = null;
+const pending = new WeakMap<Element, () => void>();
+
+function observe(node: Element, onVisible: () => void) {
+  sharedObserver ??= new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const callback = pending.get(entry.target);
+        if (!callback) continue;
+        // Reveal is one-way, so stop watching as soon as it fires.
+        pending.delete(entry.target);
+        sharedObserver?.unobserve(entry.target);
+        callback();
+      }
+    },
+    { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+  );
+
+  pending.set(node, onVisible);
+  sharedObserver.observe(node);
+
+  return () => {
+    pending.delete(node);
+    sharedObserver?.unobserve(node);
+  };
+}
+
+/**
  * Fades content up as it scrolls into view.
  *
  * The hidden state is applied from an effect rather than on the server, so
@@ -43,18 +78,7 @@ export function Reveal({
     }
 
     setState("armed");
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setState("shown");
-        observer.disconnect();
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
+    return observe(node, () => setState("shown"));
   }, []);
   /* eslint-enable react-hooks/set-state-in-effect */
 
