@@ -179,7 +179,7 @@ function MobileMenu({
   const links = [{ href: "/", label: "Home" }, ...primaryNav];
 
   return (
-    <div className="fixed inset-0 z-60 lg:hidden">
+    <div className="fixed inset-y-0 left-0 z-60 w-screen lg:hidden">
       <button
         type="button"
         className="absolute inset-0 animate-fade-in bg-ink/35 backdrop-blur-[2px]"

@@ -18,7 +18,7 @@ export function CartDrawer() {
 
   return (
     <div
-      className="fixed inset-0 z-70"
+      className="fixed inset-y-0 left-0 z-70 w-screen"
       role="dialog"
       aria-modal="true"
       aria-label="Your bag"

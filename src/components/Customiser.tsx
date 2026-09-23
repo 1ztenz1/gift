@@ -233,7 +233,7 @@ export function Customiser({ product }: { product: Product }) {
 
       {/* Phone bar — sits above the tab bar so both stay reachable. */}
       <div
-        className="fixed inset-x-0 bottom-16 z-40 border-t border-line bg-cream/95 px-4 py-3 backdrop-blur-lg lg:hidden"
+        className="fixed bottom-16 left-0 z-40 w-screen border-t border-line bg-cream/95 px-4 py-3 backdrop-blur-lg lg:hidden"
         style={{ marginBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="mx-auto flex max-w-lg items-center gap-3">

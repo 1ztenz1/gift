@@ -29,7 +29,7 @@ export function MobileTabBar() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-cream/95 backdrop-blur-lg lg:hidden"
+      className="fixed bottom-0 left-0 z-50 w-screen border-t border-line bg-cream/95 backdrop-blur-lg lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       aria-label="Quick navigation"
     >
