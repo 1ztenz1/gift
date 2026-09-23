@@ -9,6 +9,7 @@ import { cx, formatPrice } from "@/lib/format";
 import { whatsappHello } from "@/lib/whatsapp";
 import { Bag, Instagram, Menu, WhatsApp, X } from "./icons";
 import { Logo } from "./Logo";
+import { MobileNavStrip } from "./MobileNavStrip";
 
 export function Header() {
   const pathname = usePathname();
@@ -152,6 +153,8 @@ export function Header() {
           </div>
         </div>
       </header>
+
+      <MobileNavStrip />
 
       {menuOpen ? (
         <MobileMenu onClose={() => setMenuOpen(false)} isActive={isActive} />
